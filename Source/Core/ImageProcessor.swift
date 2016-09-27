@@ -150,7 +150,7 @@ public func ==(lhs: ImageProcessorWithClosure, rhs: ImageProcessorWithClosure) -
     }
 
     private func decompress(image: UIImage, targetSize: CGSize, contentMode: ImageContentMode) -> UIImage {
-        let bitmapSize = CGSize(width: CGImageGetWidth(image.CGImage), height: CGImageGetHeight(image.CGImage))
+        let bitmapSize = CGSize(width: CGImageGetWidth(image.CGImage!), height: CGImageGetHeight(image.CGImage!))
         let scaleHor = targetSize.width / bitmapSize.width
         let scaleVert = targetSize.height / bitmapSize.height
         let scale = contentMode == .AspectFill ? max(scaleHor, scaleVert) : min(scaleHor, scaleVert)
@@ -220,7 +220,7 @@ public func ==(lhs: ImageProcessorWithClosure, rhs: ImageProcessorWithClosure) -
                 return nil
             }
             let imageRef = context.createCGImage(outputImage, fromRect: inputImage.extent)
-            return UIImage(CGImage: imageRef, scale: scale, orientation: imageOrientation)
+            return UIImage(CGImage: imageRef!, scale: scale, orientation: imageOrientation)
         }
         
         /**

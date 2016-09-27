@@ -56,7 +56,7 @@ public class ImageMemoryCache: ImageMemoryCaching {
     public init(cache: NSCache) {
         self.cache = cache
         #if os(iOS) || os(tvOS)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("didReceiveMemoryWarning:"), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ImageMemoryCache.didReceiveMemoryWarning(_:)), name: UIApplicationDidReceiveMemoryWarningNotification, object: nil)
         #endif
     }
 
@@ -108,7 +108,7 @@ public class ImageMemoryCache: ImageMemoryCaching {
             return 1
         #else
             let imageRef = image.CGImage
-            return CGImageGetBytesPerRow(imageRef) * CGImageGetHeight(imageRef)
+            return CGImageGetBytesPerRow(imageRef!) * CGImageGetHeight(imageRef!)
         #endif
     }
     
