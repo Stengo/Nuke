@@ -1,0 +1,89 @@
+[
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 44,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 160,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 471,
+  "remove": 16,
+  "text": " ",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 494,
+  "remove": 2,
+  "text": "cg",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 501,
+  "remove": 1,
+  "text": "?.width)!",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 511,
+  "remove": 17,
+  "text": " ",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 535,
+  "remove": 2,
+  "text": "cg",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 542,
+  "remove": 1,
+  "text": "?.height)!",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 577,
+  "remove": 18,
+  "text": "i",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 599,
+  "remove": 15,
+  "text": ".cg",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 619,
+  "remove": 1,
+  "text": "?.cropping(to:",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 701,
+  "remove": 2,
+  "text": "cg",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 817,
+  "text": "_ ",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 1074,
+  "remove": 1,
+  "text": ".z",
+ },
+ {
+  "file": "/Users/bastianandelefski/Documents/Projects/RandomGitHubs/Nuke/Nuke.playground/Sources/CustomImageFilters.swift",
+  "offset": 1180,
+  "remove": 7,
+  "text": "(in: ",
+ }
+]

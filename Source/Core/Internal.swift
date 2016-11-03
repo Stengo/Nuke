@@ -15,13 +15,13 @@
 
 // MARK: Error Handling
 
-func errorWithCode(code: ImageManagerErrorCode) -> NSError {
+func errorWithCode(_ code: ImageManagerErrorCode) -> NSError {
     func reason() -> String {
         switch code {
-        case .Unknown: return "The image manager encountered an error that it cannot interpret."
-        case .Cancelled: return "The image task was cancelled."
-        case .DecodingFailed: return "The image manager failed to decode image data."
-        case .ProcessingFailed: return "The image manager failed to process image data."
+        case .unknown: return "The image manager encountered an error that it cannot interpret."
+        case .cancelled: return "The image task was cancelled."
+        case .decodingFailed: return "The image manager failed to decode image data."
+        case .processingFailed: return "The image manager failed to process image data."
         }
     }
     return NSError(domain: ImageManagerErrorDomain, code: code.rawValue, userInfo: [NSLocalizedFailureReasonErrorKey: reason()])
@@ -30,27 +30,27 @@ func errorWithCode(code: ImageManagerErrorCode) -> NSError {
 
 // MARK: GCD
 
-func dispathOnMainThread(closure: (Void) -> Void) {
-    NSThread.isMainThread() ? closure() : dispatch_async(dispatch_get_main_queue(), closure)
+func dispathOnMainThread(_ closure: @escaping (Void) -> Void) {
+    Thread.isMainThread ? closure() : DispatchQueue.main.async(execute: closure)
 }
 
-extension dispatch_queue_t {
-    func async(block: (Void -> Void)) {
-        dispatch_async(self, block)
+extension DispatchQueue {
+    func async(_ block: @escaping ((Void) -> Void)) {
+        self.async(execute: block)
     }
 }
 
 
 // MARK: NSOperationQueue Extensions
 
-extension NSOperationQueue {
+extension OperationQueue {
     convenience init(maxConcurrentOperationCount: Int) {
         self.init()
         self.maxConcurrentOperationCount = maxConcurrentOperationCount
     }
     
-    func addBlock(block: (Void -> Void)) -> NSOperation {
-        let operation = NSBlockOperation(block: block)
+    func addBlock(_ block: @escaping ((Void) -> Void)) -> Operation {
+        let operation = BlockOperation(block: block)
         self.addOperation(operation)
         return operation
     }
@@ -64,25 +64,25 @@ final class TaskQueue {
     var maxExecutingTaskCount = 8
     var congestionControlEnabled = true
     
-    private let queue: dispatch_queue_t
-    private var pendingTasks = NSMutableOrderedSet()
-    private var executingTasks = Set<NSURLSessionTask>()
-    private var executing = false
+    fileprivate let queue: DispatchQueue
+    fileprivate var pendingTasks = NSMutableOrderedSet()
+    fileprivate var executingTasks = Set<URLSessionTask>()
+    fileprivate var executing = false
     
-    init(queue: dispatch_queue_t) {
+    init(queue: DispatchQueue) {
         self.queue = queue
     }
     
-    func resume(task: NSURLSessionTask) {
-        if !pendingTasks.containsObject(task) && !executingTasks.contains(task) {
-            pendingTasks.addObject(task)
+    func resume(_ task: URLSessionTask) {
+        if !pendingTasks.contains(task) && !executingTasks.contains(task) {
+            pendingTasks.add(task)
             setNeedsExecute()
         }
     }
     
-    func cancel(task: NSURLSessionTask) {
-        if pendingTasks.containsObject(task) {
-            pendingTasks.removeObject(task)
+    func cancel(_ task: URLSessionTask) {
+        if pendingTasks.contains(task) {
+            pendingTasks.remove(task)
         } else if executingTasks.contains(task) {
             executingTasks.remove(task)
             task.cancel()
@@ -90,9 +90,9 @@ final class TaskQueue {
         }
     }
     
-    func finish(task: NSURLSessionTask) {
-        if pendingTasks.containsObject(task) {
-            pendingTasks.removeObject(task)
+    func finish(_ task: URLSessionTask) {
+        if pendingTasks.contains(task) {
+            pendingTasks.remove(task)
         } else if executingTasks.contains(task) {
             executingTasks.remove(task)
             setNeedsExecute()
@@ -105,7 +105,7 @@ final class TaskQueue {
             if congestionControlEnabled {
                 // Executing tasks too frequently might trash NSURLSession to the point it would crash or stop executing tasks
                 let delay = min(30.0, 8.0 + Double(executingTasks.count))
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_MSEC))), queue) {
+                queue.asyncAfter(deadline: DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_MSEC))) / Double(NSEC_PER_SEC)) {
                     self.execute()
                 }
             } else {
@@ -116,8 +116,8 @@ final class TaskQueue {
     
     func execute() {
         executing = false
-        if let task = pendingTasks.firstObject as? NSURLSessionTask where executingTasks.count < maxExecutingTaskCount {
-            pendingTasks.removeObjectAtIndex(0)
+        if let task = pendingTasks.firstObject as? URLSessionTask, executingTasks.count < maxExecutingTaskCount {
+            pendingTasks.removeObject(at: 0)
             executingTasks.insert(task)
             task.resume()
             setNeedsExecute()

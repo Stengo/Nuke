@@ -40,14 +40,14 @@ public protocol ImageLoadingView: class {
     func nk_cancelLoading()
     
     /// Loads and displays an image for the given request. Cancels previously started requests.
-    func nk_setImageWith(request: ImageRequest, options: ImageViewLoadingOptions) -> ImageTask
+    func nk_setImageWith(_ request: ImageRequest, options: ImageViewLoadingOptions) -> ImageTask
     
     /**
      Gets called when the task that is currently associated with the view completes.
      
      See https://github.com/kean/Nuke/issues/38 for more info about overriding this method.
      */
-    func nk_imageTask(task: ImageTask, didFinishWithResponse response: ImageResponse, options: ImageViewLoadingOptions)
+    func nk_imageTask(_ task: ImageTask, didFinishWithResponse response: ImageResponse, options: ImageViewLoadingOptions)
 }
 
 public extension ImageLoadingView where Self: View {
@@ -56,12 +56,12 @@ public extension ImageLoadingView where Self: View {
      
      Uses ImageContentMode.AspectFill, and current view size multiplied by screen scaling factor as an image target size.
      */
-    public func nk_setImageWith(URL: NSURL) -> ImageTask {
-        return nk_setImageWith(ImageRequest(URL: URL, targetSize: nk_targetSize(), contentMode: .AspectFill))
+    public func nk_setImageWith(_ URL: Foundation.URL) -> ImageTask {
+        return nk_setImageWith(ImageRequest(URL: URL, targetSize: nk_targetSize(), contentMode: .aspectFill))
     }
     
     /// Loads and displays an image for the given request. Cancels previously started requests.
-    public func nk_setImageWith(request: ImageRequest) -> ImageTask {
+    public func nk_setImageWith(_ request: ImageRequest) -> ImageTask {
         return nk_setImageWith(request, options: ImageViewLoadingOptions())
     }
 }
@@ -71,7 +71,7 @@ public extension View {
     public func nk_targetSize() -> CGSize {
         let size = bounds.size
         #if os(iOS) || os(tvOS)
-            let scale = UIScreen.mainScreen().scale
+            let scale = UIScreen.main.scale
         #elseif os(OSX)
             let scale = NSScreen.mainScreen()?.backingScaleFactor ?? 1.0
         #endif
@@ -92,7 +92,7 @@ public var ImageViewDefaultAnimationDuration = 0.25
 
 /// Provides default implementation for image task completion handler.
 public extension ImageLoadingView where Self: ImageDisplayingView, Self: View {
-    public func nk_setImageWith(request: ImageRequest, options: ImageViewLoadingOptions = ImageViewLoadingOptions(), placeholder: Image?) -> ImageTask {
+    public func nk_setImageWith(_ request: ImageRequest, options: ImageViewLoadingOptions = ImageViewLoadingOptions(), placeholder: Image?) -> ImageTask {
         if let placeholder = placeholder {
             nk_image = placeholder
         }
@@ -100,13 +100,13 @@ public extension ImageLoadingView where Self: ImageDisplayingView, Self: View {
     }
     
     /// Default implementation that displays the image and runs animations if necessary.
-    public func nk_imageTask(task: ImageTask, didFinishWithResponse response: ImageResponse, options: ImageViewLoadingOptions) {
+    public func nk_imageTask(_ task: ImageTask, didFinishWithResponse response: ImageResponse, options: ImageViewLoadingOptions) {
         if let handler = options.handler {
             handler(self, task, response, options)
             return
         }
         switch response {
-        case let .Success(image, info):
+        case let .success(image, info):
             // FIXME: Make nk_image write only, keep only basic opacity transition
             let previousImage = nk_image
             nk_image = image
@@ -122,12 +122,12 @@ public extension ImageLoadingView where Self: ImageDisplayingView, Self: View {
                     animation.duration = ImageViewDefaultAnimationDuration
                     animation.fromValue = 0
                     animation.toValue = 1
-                    layer?.addAnimation(animation, forKey: "imageTransition")
+                    layer?.add(animation, forKey: "imageTransition")
                 } else {
                     let animation = CATransition()
                     animation.duration = ImageViewDefaultAnimationDuration
                     animation.type = kCATransitionFade
-                    layer?.addAnimation(animation, forKey: "imageTransition")
+                    layer?.add(animation, forKey: "imageTransition")
                 }
             }
         default: return
@@ -148,7 +148,7 @@ public extension ImageLoadingView {
     }
 
     /// Loads and displays an image for the given request. Cancels previously started requests.
-    public func nk_setImageWith(request: ImageRequest, options: ImageViewLoadingOptions) -> ImageTask {
+    public func nk_setImageWith(_ request: ImageRequest, options: ImageViewLoadingOptions) -> ImageTask {
         return nk_imageLoadingController.setImageWith(request, options: options)
     }
     
