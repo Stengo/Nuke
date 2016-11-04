@@ -50,7 +50,7 @@ open class ImagePreheatingControllerForCollectionView: ImagePreheatingController
 
     fileprivate func updatePreheatRect() {
         let scrollAxis = collectionViewLayout.scrollDirection
-        let updateMargin = (scrollAxis == .vertical ? CGRectGetHeight : CGRectGetWidth)(collectionView.bounds) * preheatRectUpdateRatio
+        let updateMargin = (scrollAxis == .vertical ? collectionView.bounds.height : collectionView.bounds.width) * preheatRectUpdateRatio
         let contentOffset = collectionView.contentOffset
         guard distanceBetweenPoints(contentOffset, previousContentOffset) > updateMargin || previousContentOffset == CGPoint.zero else {
             return

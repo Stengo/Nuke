@@ -29,9 +29,9 @@ open class ImageViewLoadingController {
         if let task = imageTask {
             imageTask = nil
             // Cancel task after delay to allow new tasks to subscribe to the existing NSURLSessionTask.
-            DispatchQueue.main.async {
+            DispatchQueue.main.async(execute: {
                 task.cancel()
-            }
+            })
         }
     }
     

@@ -280,10 +280,10 @@ extension ImageManager: ImageLoadingManager {
 
     /// Updates ImageTask progress on the main thread.
     public func loader(_ loader: ImageLoading, task: ImageTask, didUpdateProgress progress: ImageTaskProgress) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async(execute: {
             task.progress = progress
             task.progressHandler?(progress)
-        }
+        })
     }
 
     /// Completes ImageTask, stores the response in memory cache.
@@ -343,7 +343,7 @@ extension ImageManager: ImageRequestKeyOwner {
 private protocol ImageTaskManaging {
     func resume(_ task: ImageTaskInternal)
     func cancel(_ task: ImageTaskInternal)
-    func addCompletion(_ completion: ImageTaskCompletion, forTask task: ImageTaskInternal)
+    func addCompletion(_ completion: @escaping ImageTaskCompletion, forTask task: ImageTaskInternal)
 }
 
 private class ImageTaskInternal: ImageTask {
@@ -365,7 +365,7 @@ private class ImageTaskInternal: ImageTask {
         return self
     }
     
-    override func completion(_ completion: ImageTaskCompletion) -> Self {
+    override func completion(_ completion: @escaping ImageTaskCompletion) -> Self {
         manager.addCompletion(completion, forTask: self)
         return self
     }

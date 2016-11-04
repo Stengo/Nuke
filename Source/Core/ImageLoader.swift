@@ -206,24 +206,24 @@ open class ImageLoader: ImageLoading {
     /// Resumes loading for the image task.
     open func resumeLoadingFor(_ task: ImageTask) {
         // Image loader performs all tasks asynchronously on its serial queue.
-        queue.async {
+        queue.async(execute: {
             if let cache = self.conf.cache {
                 // FIXME: Use better approach for managing tasks
                 self.loadStates[task] = .cacheLookup(self.conf.cachingQueue.addBlock { [weak self] in
                     let data = cache.dataFor(task)
-                    self?.queue.async {
+                    self?.queue.async(execute: {
                         if let data = data {
                             self?.decodeData(data, response: nil, task: task)
                         } else {
                             guard self?.loadStates[task] != nil else { /* no longer registered */ return }
                             self?.loadDataFor(task)
                         }
-                    }
+                    })
                 })
             } else {
                 self.loadDataFor(task)
             }
-        }
+        })
     }
 
     fileprivate func loadDataFor(_ task: ImageTask) {
@@ -238,9 +238,9 @@ open class ImageLoader: ImageLoading {
             }
         } else {
             // Subscribing to the existing task, let the manager know about its progress
-            self.queue.async {
+            self.queue.async(execute: {
                 self.manager?.loader(self, task: task, didUpdateProgress: dataTask.progress)
-            }
+            })
         }
         self.loadStates[task] = .loading(dataTask)
 
@@ -252,14 +252,14 @@ open class ImageLoader: ImageLoading {
         let dataTask = DataTask(key: key)
         dataTask.URLSessionTask = conf.dataLoader.taskWith(request,
             progress: { [weak self] completed, total in
-                self?.queue.async {
+                self?.queue.async(execute: {
                     self?.dataTask(dataTask, didUpdateProgress: ImageTaskProgress(completed: completed, total: total))
-                }
+                })
             },
             completion: { [weak self] data, response, error in
-                self?.queue.async {
+                self?.queue.async(execute: {
                     self?.dataTask(dataTask, didCompleteWithData: data, response: response, error: error)
-                }
+                })
             })
         #if !os(OSX)
             if let priority = request.priority {
@@ -305,9 +305,9 @@ open class ImageLoader: ImageLoading {
         guard loadStates[task] != nil else { /* no longer registered */ return }
         loadStates[task] = .decoding(conf.decodingQueue.addBlock { [weak self] in
             let image = self?.conf.decoder.decode(data, response: response)
-            self?.queue.async {
+            self?.queue.async(execute: {
                 self?.didDecodeImage(image, error: (image == nil ? errorWithCode(.decodingFailed) : nil), task: task)
-            }
+            })
         })
     }
     
@@ -323,9 +323,9 @@ open class ImageLoader: ImageLoading {
         guard loadStates[task] != nil else { /* no longer registered */ return }
         loadStates[task] = .processing(conf.processingQueue.addBlock { [weak self] in
             let image = processor.process(image)
-            self?.queue.async {
+            self?.queue.async(execute: {
                 self?.complete(task, image: image, error: (image == nil ? errorWithCode(.processingFailed) : nil))
-            }
+            })
         })
     }
     
@@ -336,7 +336,7 @@ open class ImageLoader: ImageLoading {
 
     /// Cancels loading for the task if there are no other outstanding executing tasks registered with the underlying data task.
     open func cancelLoadingFor(_ task: ImageTask) {
-        queue.async {
+        queue.async(execute: {
             if let state = self.loadStates[task] {
                 switch state {
                 case .cacheLookup(let operation): operation.cancel()
@@ -351,7 +351,7 @@ open class ImageLoader: ImageLoading {
                 }
                 self.loadStates[task] = nil // no longer registered
             }
-        }
+        })
     }
         
     fileprivate func removeDataTask(_ task: DataTask) {

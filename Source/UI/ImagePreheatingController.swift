@@ -42,7 +42,7 @@ open class ImagePreheatingController: NSObject {
 
     /// Calls `scrollViewDidScroll(_)` method when `contentOffset` of the scroll view changes.
     open override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if object === scrollView {
+        if object as AnyObject? === scrollView {
             scrollViewDidScroll()
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: nil)

@@ -65,7 +65,7 @@ open class ImageTask: Hashable {
      
      The closure is called even if it is added to the already completed or cancelled task.
      */
-    open func completion(_ completion: ImageTaskCompletion) -> Self { fatalError("Abstract method") }
+    open func completion(_ completion: @escaping ImageTaskCompletion) -> Self { fatalError("Abstract method") }
     
     
     // MARK: Obraining Task Progress

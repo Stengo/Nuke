@@ -18,15 +18,15 @@ class MockImageDataLoader: ImageDataLoader {
     var createdTaskCount = 0
     fileprivate let queue = OperationQueue()
 
-    override func taskWith(_ request: ImageRequest, progress: ImageDataLoadingProgress, completion: ImageDataLoadingCompletion) -> URLSessionTask {
+    override func taskWith(_ request: ImageRequest, progress: @escaping ImageDataLoadingProgress, completion: @escaping ImageDataLoadingCompletion) -> URLSessionTask {
         self.queue.addOperation {
-            progress(completed: 50, total: 100)
-            progress(completed: 100, total: 100)
+            progress(50, 100)
+            progress(100, 100)
             let bundle = Bundle(for: MockImageDataLoader.self)
             let URL = bundle.url(forResource: "Image", withExtension: "jpg")
             let data = try? Data(contentsOf: URL!)
             DispatchQueue.main.async {
-                completion(data: data, response: nil, error: nil)
+                completion(data, nil, nil)
             }
         }
         self.createdTaskCount += 1

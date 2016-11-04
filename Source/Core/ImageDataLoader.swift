@@ -15,7 +15,7 @@ public typealias ImageDataLoadingProgress = (_ completed: Int64, _ total: Int64)
 /// Performs loading of image data.
 public protocol ImageDataLoading {
     /// Creates task with a given request. Task is resumed by the object calling the method.
-    func taskWith(_ request: ImageRequest, progress: ImageDataLoadingProgress, completion: ImageDataLoadingCompletion) -> URLSessionTask
+    func taskWith(_ request: ImageRequest, progress: @escaping ImageDataLoadingProgress, completion: @escaping ImageDataLoadingCompletion) -> URLSessionTask
 
     /// Invalidates the receiver.
     func invalidate()
